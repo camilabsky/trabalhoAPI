@@ -1,0 +1,115 @@
+﻿<Window x:Class="CadastroProdutos.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CadastroProdutos"
+        mc:Ignorable="d"
+        Title="Sistema de Estoque" Height="600" Width="900">
+    <Grid Margin="10">
+        <TabControl>
+            <!-- Aba de Produtos -->
+            <TabItem Header="Produtos">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Formulario de Produtos -->
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                        <StackPanel Orientation="Vertical" Margin="0 0 10 0">
+                            <TextBlock Text="Nome:" FontWeight="SemiBold" Margin="0 0 0 2"/>
+                            <TextBox x:Name="txtProductName" Width="150"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical" Margin="0 0 10 0">
+                            <TextBlock Text="Categoria:" FontWeight="SemiBold" Margin="0 0 0 2"/>
+                            <TextBox x:Name="txtProductCategory" Width="150"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical" Margin="0 0 10 0">
+                            <TextBlock Text="Fornecedor:" FontWeight="SemiBold" Margin="0 0 0 2"/>
+                            <ComboBox x:Name="cboFornecedor" Width="150" 
+                                      DisplayMemberPath="Nome" SelectedValuePath="Id"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical" Margin="0 0 10 0">
+                            <TextBlock Text="Quantidade:" FontWeight="SemiBold" Margin="0 0 0 2"/>
+                            <TextBox x:Name="txtProductQuantity" Width="100"/>
+                        </StackPanel>
+
+                        <Button Content="Adicionar Produto" Click="AdicionarProduto_Click" Width="120" VerticalAlignment="Bottom"/>
+                    </StackPanel>
+
+                    <!-- Botão de Remover Produto -->
+                    <Button Grid.Row="1" Content="Remover Produto" Width="120" HorizontalAlignment="Left" Click="RemoverProduto_Click" Margin="0 0 0 10"/>
+
+                    <!-- DataGrid de Produtos -->
+                    <DataGrid x:Name="dgProducts" Grid.Row="2" AutoGenerateColumns="False" Margin="0 0 0 10">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                            <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="*"/>
+                            <DataGridTextColumn Header="Categoria" Binding="{Binding Categoria}" Width="*"/>
+                            <DataGridTextColumn Header="Quantidade" Binding="{Binding Quantidade}" Width="100"/>
+                            <DataGridTextColumn Header="FornecedorId" Binding="{Binding FornecedorId}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- Botão de Atualizar Produto -->
+                    <Button Grid.Row="3" Content="Atualizar Produto Selecionado" Click="AtualizarProduto_Click" Width="200" HorizontalAlignment="Right"/>
+                </Grid>
+            </TabItem>
+
+            <!-- Aba de Fornecedores -->
+            <TabItem Header="Fornecedores">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Formulario de Fornecedores -->
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                        <StackPanel Orientation="Vertical" Margin="0 0 10 0">
+                            <TextBlock Text="Nome:" FontWeight="SemiBold" Margin="0 0 0 2"/>
+                            <TextBox x:Name="txtFornecedorName" Width="200"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical" Margin="0 0 10 0">
+                            <TextBlock Text="CNPJ:" FontWeight="SemiBold" Margin="0 0 0 2"/>
+                            <TextBox x:Name="txtFornecedorCNPJ" Width="150"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical" Margin="0 0 10 0">
+                            <TextBlock Text="Telefone:" FontWeight="SemiBold" Margin="0 0 0 2"/>
+                            <TextBox x:Name="txtFornecedorTelefone" Width="150"/>
+                        </StackPanel>
+
+                        <Button Content="Adicionar Fornecedor" Click="AdicionarFornecedor_Click" Width="140" VerticalAlignment="Bottom"/>
+                    </StackPanel>
+
+                    <!-- Botão de Remover Fornecedor -->
+                    <Button Grid.Row="1" Content="Remover Fornecedor" Width="140" HorizontalAlignment="Left" Click="RemoverFornecedor_Click" Margin="0 0 0 10"/>
+
+                    <!-- DataGrid de Fornecedores -->
+                    <DataGrid x:Name="dgFornecedores" Grid.Row="2" AutoGenerateColumns="False" Margin="0 0 0 10">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                            <DataGridTextColumn Header="Nome" Binding="{Binding Nome}" Width="*"/>
+                            <DataGridTextColumn Header="CNPJ" Binding="{Binding CNPJ}" Width="150"/>
+                            <DataGridTextColumn Header="Telefone" Binding="{Binding Telefone}" Width="150"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- Botão de Atualizar Fornecedor -->
+                    <Button Grid.Row="3" Content="Atualizar Fornecedor Selecionado" Click="AtualizarFornecedor_Click" Width="220" HorizontalAlignment="Right"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

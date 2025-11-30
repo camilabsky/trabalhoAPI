@@ -1,0 +1,250 @@
+# API de Estoque
+
+Sistema de gerenciamento de estoque com API REST e interface WPF.
+
+## Estrutura do Projeto
+
+- **estoque/** - API REST em .NET 9
+- **CadastroProdutos/** - Aplicação WPF que consome a API
+
+## Requisitos
+
+- .NET 9.0 SDK
+- SQLite (incluído)
+
+## Execução
+
+### 1. Iniciar a API
+
+```powershell
+cd estoque
+dotnet run
+```
+
+A API estará disponível em: http://localhost:5099
+Swagger UI: http://localhost:5099/swagger
+
+### 2. Iniciar a aplicação WPF
+
+```powershell
+cd CadastroProdutos
+dotnet run
+```
+
+## Rotas da API
+
+### Produtos
+
+**Base URL:** http://localhost:5099
+
+#### GET /
+Lista todos os produtos.
+
+```bash
+curl http://localhost:5099
+```
+
+Resposta:
+```json
+[
+  {
+    "id": 1,
+    "nome": "Notebook",
+    "categoria": "Eletrônicos",
+    "criadoEm": "2025-11-30T10:00:00Z",
+    "quantidade": 10,
+    "fornecedorId": 1
+  }
+]
+```
+
+#### GET /{id}
+Busca produto por ID.
+
+```bash
+curl http://localhost:5099/1
+```
+
+#### POST /
+Cria um novo produto.
+
+```bash
+curl -X POST http://localhost:5099 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nome": "Mouse",
+    "categoria": "Periféricos",
+    "quantidade": 50,
+    "fornecedorId": 1
+  }'
+```
+
+Resposta: 201 Created
+```json
+{
+  "id": 2,
+  "nome": "Mouse",
+  "categoria": "Periféricos",
+  "criadoEm": "2025-11-30T10:05:00Z",
+  "quantidade": 50,
+  "fornecedorId": 1
+}
+```
+
+#### PUT /{id}
+Atualiza um produto existente.
+
+```bash
+curl -X PUT http://localhost:5099/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nome": "Notebook Gamer",
+    "categoria": "Eletrônicos",
+    "quantidade": 8,
+    "fornecedorId": 1
+  }'
+```
+
+Resposta: 200 OK
+
+#### DELETE /{id}
+Remove um produto.
+
+```bash
+curl -X DELETE http://localhost:5099/1
+```
+
+Resposta: 204 No Content
+
+#### GET /com-fornecedor
+Lista produtos com informações do fornecedor.
+
+```bash
+curl http://localhost:5099/com-fornecedor
+```
+
+Resposta:
+```json
+[
+  {
+    "id": 1,
+    "nome": "Notebook",
+    "categoria": "Eletrônicos",
+    "quantidade": 10,
+    "fornecedor": {
+      "id": 1,
+      "nome": "Tech Distribuidora",
+      "cnpj": "12345678000190"
+    }
+  }
+]
+```
+
+### Fornecedores
+
+**Base URL:** http://localhost:5099/fornecedores
+
+#### GET /fornecedores
+Lista todos os fornecedores.
+
+```bash
+curl http://localhost:5099/fornecedores
+```
+
+Resposta:
+```json
+[
+  {
+    "id": 1,
+    "nome": "Tech Distribuidora",
+    "cnpj": "12345678000190",
+    "telefone": "(11) 98765-4321"
+  }
+]
+```
+
+#### GET /fornecedores/{id}
+Busca fornecedor por ID.
+
+```bash
+curl http://localhost:5099/fornecedores/1
+```
+
+#### POST /fornecedores
+Cria um novo fornecedor.
+
+```bash
+curl -X POST http://localhost:5099/fornecedores \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nome": "Distribuidora ABC",
+    "cnpj": "98765432000100",
+    "telefone": "(11) 91234-5678"
+  }'
+```
+
+#### PUT /fornecedores/{id}
+Atualiza um fornecedor existente.
+
+```bash
+curl -X PUT http://localhost:5099/fornecedores/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nome": "Tech Distribuidora Ltda",
+    "cnpj": "12345678000190",
+    "telefone": "(11) 98765-4321"
+  }'
+```
+
+#### DELETE /fornecedores/{id}
+Remove um fornecedor.
+
+```bash
+curl -X DELETE http://localhost:5099/fornecedores/1
+```
+
+## Modelos de Dados
+
+### Produto
+```json
+{
+  "id": 0,
+  "nome": "string",
+  "categoria": "string",
+  "criadoEm": "2025-11-30T00:00:00Z",
+  "quantidade": 0,
+  "fornecedorId": 0
+}
+```
+
+### Fornecedor
+```json
+{
+  "id": 0,
+  "nome": "string",
+  "cnpj": "string",
+  "telefone": "string"
+}
+```
+
+## Banco de Dados
+
+O sistema usa SQLite. O arquivo `estoque.db` é criado automaticamente na primeira execução da API.
+
+## Console Interativo
+
+A API inclui um console interativo que permite operações CRUD diretamente no terminal:
+
+1. Cadastrar produto
+2. Listar produtos
+3. Atualizar produto por ID
+4. Remover produto por ID
+0. Sair
+
+## Códigos de Status HTTP
+
+- 200 OK - Requisição bem-sucedida
+- 201 Created - Recurso criado com sucesso
+- 204 No Content - Recurso removido com sucesso
+- 404 Not Found - Recurso não encontrado
+- 409 Conflict - Conflito (nome duplicado)
