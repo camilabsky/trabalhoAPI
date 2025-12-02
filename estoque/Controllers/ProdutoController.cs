@@ -25,10 +25,19 @@ public class ProductsController : ControllerBase{
     //POST 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] Produto p){
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         if(!string.IsNullOrWhiteSpace(p.Nome) &&
             await _db.Produtos.AnyAsync(x=>x.Nome == p.Nome)){
                 return Conflict(new {error = "Produto já cadastrado"});
             }
+        
+        // Valida se o fornecedor existe
+        if(!await _db.Fornecedores.AnyAsync(f => f.Id == p.FornecedorId)){
+            return UnprocessableEntity(new {error = "Fornecedor não encontrado"});
+        }
+
         _db.Produtos.Add(p);
         await _db.SaveChangesAsync();
         return CreatedAtAction(nameof (GetById), new {id = p.Id}, p);
@@ -37,6 +46,9 @@ public class ProductsController : ControllerBase{
     //PUT /1(id)
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] Produto p){
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         p.Id = id;
 
          if(!string.IsNullOrWhiteSpace(p.Nome) &&
@@ -45,6 +57,11 @@ public class ProductsController : ControllerBase{
             }
 
         if(!await _db.Produtos.AnyAsync(x=> x.Id == id)) return NotFound();
+
+        // Valida se o fornecedor existe
+        if(!await _db.Fornecedores.AnyAsync(f => f.Id == p.FornecedorId)){
+            return UnprocessableEntity(new {error = "Fornecedor não encontrado"});
+        }
 
         _db.Entry(p).State = EntityState.Modified;
         await _db.SaveChangesAsync();

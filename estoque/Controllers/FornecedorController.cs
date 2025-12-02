@@ -25,10 +25,20 @@ public class FornecedorController : ControllerBase{
     //POST 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] Fornecedor f){
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         if(!string.IsNullOrWhiteSpace(f.Nome) &&
             await _db.Fornecedores.AnyAsync(x=>x.Nome == f.Nome)){
                 return Conflict(new {error = "Fornecedor já cadastrado"});
             }
+        
+        // Valida CNPJ único
+        if(!string.IsNullOrWhiteSpace(f.CNPJ) &&
+            await _db.Fornecedores.AnyAsync(x=>x.CNPJ == f.CNPJ)){
+                return Conflict(new {error = "CNPJ já cadastrado"});
+            }
+
         _db.Fornecedores.Add(f);
         await _db.SaveChangesAsync();
         return CreatedAtAction(nameof (GetById), new {id = f.Id}, f);
@@ -37,11 +47,20 @@ public class FornecedorController : ControllerBase{
     //PUT /1(id)
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] Fornecedor f){
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         f.Id = id;
 
          if(!string.IsNullOrWhiteSpace(f.Nome) &&
             await _db.Fornecedores.AnyAsync(x=>x.Nome == f.Nome && x.Id != id)){
                 return Conflict(new {error = "Fornecedor já cadastrado."});
+            }
+        
+        // Valida CNPJ único
+        if(!string.IsNullOrWhiteSpace(f.CNPJ) &&
+            await _db.Fornecedores.AnyAsync(x=>x.CNPJ == f.CNPJ && x.Id != id)){
+                return Conflict(new {error = "CNPJ já cadastrado"});
             }
 
         if(!await _db.Fornecedores.AnyAsync(x=> x.Id == id)) return NotFound();

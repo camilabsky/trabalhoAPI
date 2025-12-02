@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using estoque.Models;
+using Estoque.Models;
 
 namespace Estoque.Data;
 

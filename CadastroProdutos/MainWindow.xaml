@@ -63,6 +63,35 @@
                 </Grid>
             </TabItem>
 
+            <!-- Aba de Produtos com Fornecedor (INNER JOIN) -->
+            <TabItem Header="Produtos com Fornecedor">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                        <TextBlock Text="Lista de Produtos com Informações do Fornecedor (INNER JOIN)" 
+                                   FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Margin="0 0 10 0"/>
+                        <Button Content="Atualizar Lista" Click="AtualizarProdutosComFornecedor_Click" Width="120"/>
+                    </StackPanel>
+
+                    <!-- DataGrid com INNER JOIN -->
+                    <DataGrid x:Name="dgProdutosComFornecedor" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Produto ID" Binding="{Binding Id}" Width="80"/>
+                            <DataGridTextColumn Header="Produto Nome" Binding="{Binding Nome}" Width="*"/>
+                            <DataGridTextColumn Header="Categoria" Binding="{Binding Categoria}" Width="*"/>
+                            <DataGridTextColumn Header="Quantidade" Binding="{Binding Quantidade}" Width="100"/>
+                            <DataGridTextColumn Header="Fornecedor ID" Binding="{Binding Fornecedor.Id}" Width="100"/>
+                            <DataGridTextColumn Header="Fornecedor Nome" Binding="{Binding Fornecedor.Nome}" Width="*"/>
+                            <DataGridTextColumn Header="CNPJ" Binding="{Binding Fornecedor.CNPJ}" Width="150"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
             <!-- Aba de Fornecedores -->
             <TabItem Header="Fornecedores">
                 <Grid Margin="10">

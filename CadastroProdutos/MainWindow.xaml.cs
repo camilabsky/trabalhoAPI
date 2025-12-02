@@ -17,12 +17,11 @@ namespace CadastroProdutos;
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-namespace CadastroProdutos{
-    public partial class MainWindow : Window
-    {
-        private ObservableCollection<Product> _products = new ObservableCollection<Product>();
-        private ObservableCollection<Fornecedor> _fornecedores = new ObservableCollection<Fornecedor>();
-        private readonly HttpClient _httpClient;
+public partial class MainWindow : Window
+{
+    private ObservableCollection<Product> _products = new ObservableCollection<Product>();
+    private ObservableCollection<Fornecedor> _fornecedores = new ObservableCollection<Fornecedor>();
+    private readonly HttpClient _httpClient;
         private const string API_BASE_URL = "http://localhost:5099";
 
         public MainWindow()
@@ -31,6 +30,7 @@ namespace CadastroProdutos{
             _httpClient = new HttpClient { BaseAddress = new Uri(API_BASE_URL) };
             LoadFornecedoresFromApi();
             LoadProductsFromApi();
+            LoadProdutosComFornecedor();
             dgProducts.ItemsSource = _products;
             dgFornecedores.ItemsSource = _fornecedores;
         }
@@ -207,8 +207,23 @@ namespace CadastroProdutos{
                 return;
             }
 
-            if(cboFornecedor.SelectedValue == null){
+            if(cboFornecedor.SelectedItem == null || cboFornecedor.SelectedValue == null){
                 MessageBox.Show("Selecione um fornecedor!", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            int fornecedorId;
+            if (cboFornecedor.SelectedValue is int idValue)
+            {
+                fornecedorId = idValue;
+            }
+            else if (int.TryParse(cboFornecedor.SelectedValue?.ToString(), out var parsedId))
+            {
+                fornecedorId = parsedId;
+            }
+            else
+            {
+                MessageBox.Show("Erro ao obter ID do fornecedor selecionado.", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -216,7 +231,7 @@ namespace CadastroProdutos{
                 Nome = txtProductName.Text,
                 Categoria = txtProductCategory.Text,
                 Quantidade = qty,
-                FornecedorId = (int)cboFornecedor.SelectedValue
+                FornecedorId = fornecedorId
             };
 
             try
@@ -321,9 +336,30 @@ namespace CadastroProdutos{
             }
         }
 
-        private async void AdicionarProduto_Click(object sender, RoutedEventArgs e) => await Adicionar_Click(sender, e);
-        private async void RemoverProduto_Click(object sender, RoutedEventArgs e) => await Remover_Click(sender, e);
-        private async void AtualizarProduto_Click(object sender, RoutedEventArgs e) => await SalvarBanco_Click(sender, e);
+        private void AdicionarProduto_Click(object sender, RoutedEventArgs e) => Adicionar_Click(sender, e);
+        private void RemoverProduto_Click(object sender, RoutedEventArgs e) => Remover_Click(sender, e);
+        private void AtualizarProduto_Click(object sender, RoutedEventArgs e) => SalvarBanco_Click(sender, e);
+
+        private async void LoadProdutosComFornecedor(){
+            try
+            {
+                var produtosComFornecedor = await _httpClient.GetFromJsonAsync<List<ProdutoComFornecedor>>("/com-fornecedor");
+                if (produtosComFornecedor != null)
+                {
+                    dgProdutosComFornecedor.ItemsSource = produtosComFornecedor;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar produtos com fornecedor: {ex.Message}", "Erro", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void AtualizarProdutosComFornecedor_Click(object sender, RoutedEventArgs e){
+            LoadProdutosComFornecedor();
+            MessageBox.Show("Lista atualizada!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
 
         #endregion
     }
@@ -346,4 +382,19 @@ namespace CadastroProdutos{
         public string CNPJ { get; set; } = "";
         public string Telefone { get; set; } = "";
     }
-}
+
+    public class ProdutoComFornecedor
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; } = "";
+        public string Categoria { get; set; } = "";
+        public int Quantidade { get; set; }
+        public FornecedorInfo Fornecedor { get; set; } = new FornecedorInfo();
+    }
+
+    public class FornecedorInfo
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; } = "";
+        public string CNPJ { get; set; } = "";
+    }
