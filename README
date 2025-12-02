@@ -17,16 +17,14 @@ Sistema de gerenciamento de estoque com API REST e interface WPF.
 ### 1. Iniciar a API
 
 ```powershell
-cd estoque
-dotnet run
+cd .\estoque\
+dotnet run 
 ```
-
-A API estará disponível em: http://localhost:5099
-Swagger UI: http://localhost:5099/swagger
+Manter api aberta para rodar wpf
 
 ### 2. Iniciar a aplicação WPF
 
-```powershell
+```em outro powershell
 cd CadastroProdutos
 dotnet run
 ```
